@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 250 250 250;
+  --foreground: 17 24 39;
+  --surface: 255 255 255;
+  --border: 229 231 235;
+  --primary: 79 70 229;
+  --primary-foreground: 255 255 255;
+  --muted: 243 244 246;
+  --muted-foreground: 107 114 128;
+  --success: 22 163 74;
+  --warning: 217 119 6;
+  --danger: 220 38 38;
+}
+
+.dark {
+  --background: 10 10 14;
+  --foreground: 243 244 246;
+  --surface: 22 22 27;
+  --border: 39 39 46;
+  --primary: 129 140 248;
+  --primary-foreground: 17 24 39;
+  --muted: 30 30 36;
+  --muted-foreground: 156 163 175;
+  --success: 74 222 128;
+  --warning: 251 191 36;
+  --danger: 248 113 113;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  font-feature-settings: "cv11", "ss01";
+}

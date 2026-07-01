@@ -1,0 +1,11 @@
+<html>
+  <body>
+    <p>Hi {{ candidate_name }},</p>
+    <p>{{ full_name }} has referred you to join the Agilisium Intern Portal.</p>
+    <p>Please click the button below to complete your registration. This link expires on {{ expires_at }}.</p>
+    <p><a href="{{ invite_link }}" style="display:inline-block;padding:10px 16px;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px">Create Account</a></p>
+    <p>If the button doesn't work, copy-paste this URL into your browser:</p>
+    <p>{{ invite_link }}</p>
+    <p>— Agilisium Intern Portal</p>
+  </body>
+</html>

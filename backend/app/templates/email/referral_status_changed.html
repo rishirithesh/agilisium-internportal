@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<p style="font-size:14px;color:#374151;">Hi {{ full_name }},</p>
+<p style="font-size:14px;color:#374151;">
+  The referral for <strong>{{ candidate_name }}</strong> has moved to a new status:
+</p>
+<p style="font-size:16px;font-weight:600;color:#111827;background:#eef2ff;padding:10px 16px;border-radius:8px;display:inline-block;">
+  {{ status }}
+</p>
+<p style="font-size:14px;color:#374151;">Log in to AIRP to view full details and next steps.</p>
+{% endblock %}
