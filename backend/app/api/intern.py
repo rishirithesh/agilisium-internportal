@@ -13,7 +13,7 @@ from app.schemas import InternshipResponse, UserResponse, ProjectResponse, Atten
 from app.services.email_service import send_email_background
 from app.services.audit_service import log_action
 from app.core.config import settings
-from app.core.supabase_client import supabase
+from app.core.supabase_client import upload_file_to_storage
 
 router = APIRouter()
 
@@ -38,18 +38,12 @@ def validate_file(file: UploadFile, allowed_extensions: list[str]):
         )
 
 def upload_to_supabase(file: UploadFile, bucket: str) -> str:
-    """Upload a file to Supabase Storage and return its public URL."""
+    """Upload a file to Supabase Storage or fall back to local disk storage."""
     ext = os.path.splitext(file.filename)[1].lower()
     unique_name = f"{uuid.uuid4()}{ext}"
     file_bytes = file.file.read()
     content_type = file.content_type or "application/octet-stream"
-    supabase.storage.from_(bucket).upload(
-        path=unique_name,
-        file=file_bytes,
-        file_options={"content-type": content_type, "upsert": "false"}
-    )
-    public_url = supabase.storage.from_(bucket).get_public_url(unique_name)
-    return public_url
+    return upload_file_to_storage(bucket, unique_name, file_bytes, content_type)
 
 # Keep for backward-compatibility alias used by admin.py
 def save_uploaded_file(file: UploadFile, subfolder: str) -> str:
