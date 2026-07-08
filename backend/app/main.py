@@ -21,13 +21,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Ensure uploads directories exist
+# Ensure uploads directories exist (for local dev fallback)
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 os.makedirs(os.path.join(settings.UPLOAD_DIR, "resumes"), exist_ok=True)
 os.makedirs(os.path.join(settings.UPLOAD_DIR, "offers"), exist_ok=True)
 os.makedirs(os.path.join(settings.UPLOAD_DIR, "presentations"), exist_ok=True)
 
-# Mount uploads directory as static
+# Mount uploads directory as static (local dev only; production files served from Supabase Storage URLs)
 app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
 # Include routers

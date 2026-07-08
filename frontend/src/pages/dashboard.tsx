@@ -129,7 +129,7 @@ export const Dashboard: React.FC = () => {
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace('_', ' ')}
           </h2>
           <div className="text-xs text-neutral-400 font-medium">
-            Local Time: {new Date().toLocaleDateString()}
+            Logged in as: {email} ({role})
           </div>
         </header>
 
@@ -1725,7 +1725,7 @@ const InternPortal: React.FC = () => {
 
           {/* Project Selection / Tracking panel */}
           <div className="lg:col-span-2 bg-white border border-neutral-200 rounded-xl p-6 shadow-sm">
-            <h4 className="text-xs font-bold text-neutral-800 uppercase tracking-wider mb-4">Internship Project Sandbox</h4>
+            <h4 className="text-xs font-bold text-neutral-800 uppercase tracking-wider mb-4">Internship Project Tracking</h4> 
 
             {/* If no project selected yet */}
             {!project ? (
@@ -1884,7 +1884,7 @@ const InternPortal: React.FC = () => {
                 className="inline-flex items-center gap-1.5 border border-brand-200 hover:bg-brand-50 text-brand-700 text-xs font-bold py-2 px-4 rounded-lg transition-colors"
               >
                 <FileDown className="w-3.5 h-3.5" />
-                Download Slide Template (PPTX)
+                Download Template (PPTX)
               </a>
             </div>
 

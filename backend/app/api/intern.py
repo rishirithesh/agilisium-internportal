@@ -1,5 +1,5 @@
 import os
-import shutil
+import uuid
 from datetime import date, datetime
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks, status
@@ -13,6 +13,7 @@ from app.schemas import InternshipResponse, UserResponse, ProjectResponse, Atten
 from app.services.email_service import send_email_background
 from app.services.audit_service import log_action
 from app.core.config import settings
+from app.core.supabase_client import supabase
 
 router = APIRouter()
 
@@ -36,14 +37,30 @@ def validate_file(file: UploadFile, allowed_extensions: list[str]):
             detail="File size exceeds the 5MB limit."
         )
 
+def upload_to_supabase(file: UploadFile, bucket: str) -> str:
+    """Upload a file to Supabase Storage and return its public URL."""
+    ext = os.path.splitext(file.filename)[1].lower()
+    unique_name = f"{uuid.uuid4()}{ext}"
+    file_bytes = file.file.read()
+    content_type = file.content_type or "application/octet-stream"
+    supabase.storage.from_(bucket).upload(
+        path=unique_name,
+        file=file_bytes,
+        file_options={"content-type": content_type, "upsert": "false"}
+    )
+    public_url = supabase.storage.from_(bucket).get_public_url(unique_name)
+    return public_url
+
+# Keep for backward-compatibility alias used by admin.py
 def save_uploaded_file(file: UploadFile, subfolder: str) -> str:
-    folder = os.path.join(settings.UPLOAD_DIR, subfolder)
-    os.makedirs(folder, exist_ok=True)
-    filename = f"{datetime.utcnow().timestamp()}_{file.filename}"
-    file_path = os.path.join(folder, filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return file_path.replace("\\", "/")
+    """Legacy alias — maps subfolder names to Supabase bucket names."""
+    bucket_map = {
+        "resumes": "resumes",
+        "offers": "offers",
+        "presentations": "presentations",
+    }
+    bucket = bucket_map.get(subfolder, subfolder)
+    return upload_to_supabase(file, bucket)
 
 @router.post("/apply", response_model=InternshipResponse)
 async def apply_internship(
@@ -64,8 +81,8 @@ async def apply_internship(
     # Validate resume (PDF only)
     validate_file(resume, [".pdf"])
     
-    # Save resume
-    resume_path = save_uploaded_file(resume, "resumes")
+    # Upload resume to Supabase Storage
+    resume_path = upload_to_supabase(resume, "resumes")
     
     # Check if referrer exists (Employee role)
     referrer = db.query(User).filter(User.email == referrer_email, User.role == "Employee").first()
@@ -162,7 +179,7 @@ async def complete_profile(
     
     if resume:
         validate_file(resume, [".pdf"])
-        internship.resume_path = save_uploaded_file(resume, "resumes")
+        internship.resume_path = upload_to_supabase(resume, "resumes")
         
     internship.status = "WAITING_ADMIN"
     db.commit()
@@ -391,8 +408,8 @@ async def upload_final_presentation(
         
     validate_file(ppt, [".pptx", ".ppt"])
     
-    # Save final ppt
-    ppt_path = save_uploaded_file(ppt, "presentations")
+    # Upload final presentation to Supabase Storage
+    ppt_path = upload_to_supabase(ppt, "presentations")
     
     internship.final_ppt_path = ppt_path
     # Keep status as ACTIVATED but with uploaded PPT. Admin will review and change status to COMPLETED
