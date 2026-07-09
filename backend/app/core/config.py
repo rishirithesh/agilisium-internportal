@@ -1,27 +1,30 @@
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://postgres:[Rissn@20292029]@db.docrqhnmfmjvxegnxgpd.supabase.co:5432/postgres"
-    JWT_SECRET: str = "9825b741029c017d23a49f87ef9280cdb90a12e2c56aef7b62c451db93ff0e81"
+    DATABASE_URL: str = ""
+    JWT_SECRET: str = ""
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
-    
+
     # Supabase (for file storage)
-    SUPABASE_URL: str = "https://docrqhnmfmjvxegnxgpd.supabase.co"
-    SUPABASE_SERVICE_KEY: str = "sb_publishable_JvjgJlMyIIR1c0t2ICLZXA_GIbXyN3A"  # service_role key from Supabase dashboard
+    SUPABASE_URL: str = ""
+    SUPABASE_SERVICE_KEY: str = ""
 
     # SMTP Defaults (from env, will be fallback if not in DB settings)
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
-    SMTP_USER: str = "rishi2470003@ssn.edu.in"
-    SMTP_PASS: str = "hava kcby kmpa qqom"
-    SMTP_FROM: str = "Agilisium Intern Portal <rishi2470003@ssn.edu.in>"
-    
+    SMTP_USER: str = ""
+    SMTP_PASS: str = ""
+    SMTP_FROM: str = ""
+
     UPLOAD_DIR: str = "uploads"
 
-    class Config:
-        env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env")
-        extra = "ignore"
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
+        extra="ignore",
+    )
+
 
 settings = Settings()
