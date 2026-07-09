@@ -5,7 +5,11 @@ services:
     region: oregon
     plan: free
     rootDir: backend
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      export CARGO_HOME=/tmp/.cargo
+      export RUSTUP_HOME=/tmp/.rustup
+      mkdir -p $CARGO_HOME $RUSTUP_HOME
+      pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
