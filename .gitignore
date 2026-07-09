@@ -1,0 +1,46 @@
+# ======================
+# AIRP - Git Ignore
+# ======================
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.next/
+
+# Local uploads (ephemeral, replaced by Supabase Storage in prod)
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage

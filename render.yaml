@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: airp-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: |
+      export CARGO_HOME=/tmp/.cargo
+      export RUSTUP_HOME=/tmp/.rustup
+      mkdir -p $CARGO_HOME $RUSTUP_HOME
+      pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false   # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: SUPABASE_URL
+        value: https://docrqhnmfmjvxegnxgpd.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        sync: false   # Set manually in Render dashboard (service_role key)
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: UPLOAD_DIR
+        value: uploads
